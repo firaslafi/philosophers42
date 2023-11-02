@@ -12,7 +12,7 @@ NAME = philo
 CFLAGS = -Wall -Wextra -Werror 
 CC = cc
 
-SRCS = philosophers.c ./utils/ft_isdigit.c ./utils/ft_atoi.c
+SRCS = philosophers.c ./utils/ft_isdigit.c ./utils/ft_atoi.c ./utils/ft_error.c
 OBJS = $(SRCS:.c=.o)
 
 
