@@ -17,8 +17,8 @@ OBJS = $(SRCS:.c=.o)
 
 
 
-$(NAME): $(OBJS) $(LIBFT)
-	ar rcs $(NAME) $(OBJS) $(LIBFT)
+$(NAME): $(OBJS) 
+	cc  $(SRCS) -o $(NAME) $(CFLAGS)
 	echo "$(GREEN)Philosophers Compiled$(DEF_COLOR)"
 
 all: $(NAME)
