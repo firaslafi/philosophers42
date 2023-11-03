@@ -22,11 +22,18 @@ int	ft_checkallnumvals(char **str)
 }
 int	main(int argc, char **argv)
 {
+	t_data data;
+
 	// fix paths for 5 or 6
 	if (argc == 5)
 	{
 	    ft_checkallnumvals(argv);
-        
+		// =start
+		// data = (struct s_data *) malloc(sizeof(struct s_data));
+		data.philo_num = ft_atoi(argv[1]);
+		data.philos = malloc(sizeof(struct s_philo));
+		system("leaks philo");
+        (void)data;
 	}
 	else
 	{
