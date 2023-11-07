@@ -2,16 +2,21 @@
 #include "./philosophers.h"
 
 // check args all num and verify input values
-int	ft_checkallnumvals(char **str)
+int	ft_checkallnumvals(char **str, int argc)
 {
 	int	i;
 
 	i = 1;
-	if (ft_atoi(str[1]) > 200)
-		ft_error("Input Error: more than 200 philo");
+	if (ft_atoi(str[1]) > 200 || ft_atoi(str[1]) <= 0)
+		ft_error("Input Error: Invalid number of philos");
 	if (ft_atoi(str[2]) <= 0 || ft_atoi(str[3]) <= 0 || ft_atoi(str[3]) <= 0
 		|| ft_atoi(str[4]) <= 0)
 		ft_error("Input Error: negative or zero value");
+	if (argc == 6)
+		{
+			if (ft_atoi(str[5]) <= 0)
+				ft_error("Input Error: negative or zero num meals value");
+		}
 	while (str[i])
 	{
 		if (!ft_isalldigit(str[i]))
@@ -20,20 +25,49 @@ int	ft_checkallnumvals(char **str)
 	}
 	return (0);
 }
+// fill the program related data
+void fill_progdata(t_program *progdata, char **argv, int argc)
+{
+	progdata->num_philos = ft_atoi(argv[1]);
+	progdata->time_die = ft_atoi(argv[2]);
+	progdata->time_eat = ft_atoi(argv[3]);
+	progdata->time_sleep = ft_atoi(argv[4]);
+	if (argc == 6)
+		progdata->num_meals = ft_atoi(argv[5]);
+	else
+		progdata->num_meals = -1;
+	progdata->dead = 0;
+	progdata->finished = 0;
+}
+void alloc_prog(t_program *progdata)
+{
+	
+	// i need to free after each fail, change ft error for alloc prog as solution
+	progdata->th_id = malloc(progdata->num_philos * sizeof(pthread_t));
+	if (!progdata->th_id)
+		ft_error("threads allocation failed");
+	progdata->forks = malloc(progdata->num_philos * sizeof(pthread_mutex_t));
+	if (!progdata->forks)
+		ft_error("forks allocation failed");
+	progdata->philos = malloc(progdata->num_philos * sizeof(t_philo));
+	if (!progdata->philos)
+		ft_error("philos allocation failed");
+}
 int	main(int argc, char **argv)
 {
-	t_data data;
+	t_program progdata;
 
-	// fix paths for 5 or 6
-	if (argc == 5)
+	if (argc == 5 || argc == 6)
 	{
-	    ft_checkallnumvals(argv);
+	    ft_checkallnumvals(argv, argc);
 		// =start
-		// data = (struct s_data *) malloc(sizeof(struct s_data));
-		data.philo_num = ft_atoi(argv[1]);
-		data.philos = malloc(sizeof(struct s_philo));
-		system("leaks philo");
-        (void)data;
+
+		fill_progdata(&progdata, argv, argc);
+		alloc_prog(&progdata);
+		// printf("data = %i\n", data->philo_num);
+		// free(data->philos);
+		// free(data);
+        // (void)data;
 	}
 	else
 	{
