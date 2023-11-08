@@ -41,11 +41,7 @@ void *ft_malloc(t_mem_block **lst, int size)
  ft_add_mem_block(lst, p);
  return (p);
 }
-typedef struct s_mem_block
-{
- void    *block_pointer;
- struct s_mem_block *next;
-}      t_mem_block;
+
 void ft_free_all(t_mem_block **lst)
 {
  t_mem_block *temp;

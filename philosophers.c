@@ -39,11 +39,12 @@ void fill_progdata(t_program *progdata, char **argv, int argc)
 	progdata->dead = 0;
 	progdata->finished = 0;
 }
-void alloc_prog(t_program *progdata)
+void alloc_prog(t_program *progdata, t_mem_block **lst)
 {
 	
 	// i need to free after each fail, change ft error for alloc prog as solution
-	progdata->th_id = malloc(progdata->num_philos * sizeof(pthread_t));
+	progdata->th_id = ft_malloc(lst, progdata->num_philos * sizeof(pthread_t));
+	// progdata->th_id = malloc(progdata->num_philos * sizeof(pthread_t));	
 	if (!progdata->th_id)
 		ft_error("threads allocation failed");
 	progdata->forks = malloc(progdata->num_philos * sizeof(pthread_mutex_t));
@@ -52,10 +53,13 @@ void alloc_prog(t_program *progdata)
 	progdata->philos = malloc(progdata->num_philos * sizeof(t_philo));
 	if (!progdata->philos)
 		ft_error("philos allocation failed");
+	pthread_mutex_init(&progdata->write, NULL);
+	pthread_mutex_init(&progdata->lock, NULL);
 }
 int	main(int argc, char **argv)
 {
 	t_program progdata;
+	t_mem_block *lst;
 
 	if (argc == 5 || argc == 6)
 	{
@@ -63,7 +67,7 @@ int	main(int argc, char **argv)
 		// =start
 
 		fill_progdata(&progdata, argv, argc);
-		alloc_prog(&progdata);
+		alloc_prog(&progdata, &lst);
 		// printf("data = %i\n", data->philo_num);
 		// free(data->philos);
 		// free(data);

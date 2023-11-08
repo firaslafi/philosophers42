@@ -13,6 +13,12 @@
 
 struct s_program;
 
+typedef struct s_mem_block
+{
+ void    *block_pointer;
+ struct s_mem_block *next;
+}      t_mem_block;
+
 typedef struct s_philo
 {
 	struct s_program	*data;
@@ -50,5 +56,6 @@ int	ft_isdigit(int c);
 int ft_isalldigit(char *str);
 int	ft_atoi(char *str);
 void	ft_error(char *msg);
+void *ft_malloc(t_mem_block **lst, int size);
 
 #endif
