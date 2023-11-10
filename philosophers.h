@@ -55,7 +55,8 @@ typedef struct s_program
 int	ft_isdigit(int c);
 int ft_isalldigit(char *str);
 int	ft_atoi(char *str);
-void	ft_error(char *msg);
+void	ft_error(char *msg, t_mem_block **lst);
 void *ft_malloc(t_mem_block **lst, int size);
+void ft_free_all(t_mem_block **lst);
 
 #endif
