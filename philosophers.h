@@ -24,7 +24,7 @@ typedef struct s_philo
 	struct s_program	*data;
 	pthread_t		t1;
 	int				id;
-	int				eat_cont;
+	int				eat_count;
 	int				status;
 	int				eating;
 	uint64_t		time_to_die;
