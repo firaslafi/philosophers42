@@ -10,6 +10,7 @@
 # include <errno.h>
 # include <pthread.h>
 # include <inttypes.h>
+# include <sys/time.h>
 
 struct s_program;
 
@@ -25,7 +26,7 @@ typedef struct s_philo
 	pthread_t		t1;
 	int				id;
 	int				eat_count;
-	int				status;
+	// int				status;
 	int				eating;
 	uint64_t		time_to_die;
 	pthread_mutex_t	lock;
@@ -58,5 +59,7 @@ int	ft_atoi(char *str);
 void	ft_error(char *msg, t_mem_block **lst);
 void *ft_malloc(t_mem_block **lst, int size);
 void ft_free_all(t_mem_block **lst);
+void	ft_error_init(char *msg, t_mem_block **lst, t_program *progdata);
+size_t	get_current_time(void);
 
 #endif

@@ -87,7 +87,7 @@ void init_philos(t_program *progdata)
 		progdata->philos[i].time_to_die = progdata->time_die;
 		progdata->philos[i].eat_count = 0;
 		progdata->philos[i].eating = 0;
-		progdata->philos[i].status = 0;
+		// progdata->philos[i].status = 0; // verify the need of this
 		pthread_mutex_init(&progdata->philos[i].lock, NULL);
 		i++;
 	}
@@ -104,9 +104,13 @@ int	main(int argc, char **argv)
 		// =start
 		// on exit destroy mutexs crucial shit
 		fill_progdata(&progdata, argv, argc);
+
 		alloc_prog(&progdata, &lst);
+
 		init_forks(&progdata);
 		init_philos(&progdata);
+		// use ft_error_init from now on
+		// printf("time = %li\n", get_current_time());
 		ft_free_all(&lst);
 	}
 	else
