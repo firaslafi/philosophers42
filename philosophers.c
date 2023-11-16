@@ -104,13 +104,12 @@ int	main(int argc, char **argv)
 		// =start
 		// on exit destroy mutexs crucial shit
 		fill_progdata(&progdata, argv, argc);
-
 		alloc_prog(&progdata, &lst);
-
 		init_forks(&progdata);
 		init_philos(&progdata);
 		// use ft_error_init from now on
-		// printf("time = %li\n", get_current_time());
+		printf("time = %li\n", get_current_time());
+		// ft_exit(&progdata);
 		ft_free_all(&lst);
 	}
 	else

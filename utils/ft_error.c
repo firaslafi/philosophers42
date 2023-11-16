@@ -11,6 +11,7 @@ void	ft_exit(t_program *progdata)
 	{
 		pthread_mutex_destroy(&progdata->forks[i]);
 		pthread_mutex_destroy(&progdata->philos[i].lock);
+		i++;
 	}
 	pthread_mutex_destroy(&progdata->write);
 	pthread_mutex_destroy(&progdata->lock);

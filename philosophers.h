@@ -61,5 +61,6 @@ void *ft_malloc(t_mem_block **lst, int size);
 void ft_free_all(t_mem_block **lst);
 void	ft_error_init(char *msg, t_mem_block **lst, t_program *progdata);
 size_t	get_current_time(void);
+void	ft_exit(t_program *progdata);
 
 #endif
