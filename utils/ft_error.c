@@ -26,8 +26,8 @@ void	ft_error(char *msg, t_mem_block **lst)
 void	ft_error_init(char *msg, t_mem_block **lst, t_program *progdata)
 {
 	printf("%s\n", msg);
-	ft_free_all(lst);
 	if (progdata)
 		ft_exit(progdata);
+	ft_free_all(lst);
 	exit(EXIT_FAILURE);
 }

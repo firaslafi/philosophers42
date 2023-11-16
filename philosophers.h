@@ -14,11 +14,11 @@
 
 struct s_program;
 
-typedef struct s_mem_block
+typedef struct mem_block 
 {
- void    *block_pointer;
- struct s_mem_block *next;
-}      t_mem_block;
+    void *block_pointer;
+    struct mem_block *next;
+} t_mem_block;
 
 typedef struct s_philo
 {
@@ -61,6 +61,8 @@ void *ft_malloc(t_mem_block **lst, int size);
 void ft_free_all(t_mem_block **lst);
 void	ft_error_init(char *msg, t_mem_block **lst, t_program *progdata);
 size_t	get_current_time(void);
+int	ft_usleep(size_t milliseconds);
 void	ft_exit(t_program *progdata);
+
 
 #endif

@@ -41,7 +41,7 @@ void	fill_progdata(t_program *progdata, char **argv, int argc)
 }
 void	alloc_prog(t_program *progdata, t_mem_block **lst)
 {
-	progdata->th_id = ft_malloc(lst, progdata->num_philos * sizeof(pthread_t));
+	progdata->th_id = ft_malloc(lst, (progdata->num_philos * sizeof(pthread_t)));
 	if (!progdata->th_id)
 		ft_error("threads allocation failed", lst);
 	progdata->forks = ft_malloc(lst, progdata->num_philos
@@ -92,11 +92,49 @@ void init_philos(t_program *progdata)
 		i++;
 	}
 }
+void* monitor(void* arg) {
+    // Dummy thread function
+	(void)arg;
+    return NULL;
+}
+void* routine(void* arg) {
+
+	(void)arg;
+
+    return NULL;
+}
+void	init_threads(t_program *progdata, t_mem_block **lst)
+{
+	int			i;
+	pthread_t	m_tid;
+
+	progdata->start_time = get_current_time();
+	if (progdata->num_meals != -1)
+	{
+		if (pthread_create(&m_tid, NULL, &monitor, &progdata->philos[0]) != 0)
+			ft_error_init("monitor thread creating failled", lst, progdata);
+	}
+	i = 0;
+	while (i < progdata->num_philos)
+	{
+		if (pthread_create(&progdata->th_id[i], NULL, &routine, &progdata->philos[i]) != 0)
+			ft_error_init("thread creating failled", lst, progdata);
+		ft_usleep(1);
+		i++;
+	}
+	i = 0;
+	while (i < progdata->num_philos)
+	{
+		if (pthread_join(progdata->th_id[i], NULL) != 0)
+			ft_error_init("thread joining failled", lst, progdata);
+		i++;
+	}
+}
 
 int	main(int argc, char **argv)
 {
 	t_program progdata;
-	t_mem_block *lst;
+	t_mem_block *lst = NULL;
 
 	if (argc == 5 || argc == 6)
 	{
@@ -107,9 +145,9 @@ int	main(int argc, char **argv)
 		alloc_prog(&progdata, &lst);
 		init_forks(&progdata);
 		init_philos(&progdata);
+
 		// use ft_error_init from now on
-		printf("time = %li\n", get_current_time());
-		// ft_exit(&progdata);
+		init_threads(&progdata, &lst);
 		ft_free_all(&lst);
 	}
 	else
