@@ -13,7 +13,7 @@ CFLAGS = -pthread -Wall -Wextra -Werror
 CC = cc
 
 SRCS = philosophers.c ./utils/ft_isdigit.c ./utils/ft_atoi.c ./utils/ft_error.c garbage_collector.c \
-		./utils/time.c
+		./utils/time.c actions.c
 OBJS = $(SRCS:.c=.o)
 
 

@@ -63,6 +63,8 @@ void	ft_error_init(char *msg, t_mem_block **lst, t_program *progdata);
 size_t	get_current_time(void);
 int	ft_usleep(size_t milliseconds);
 void	ft_exit(t_program *progdata);
+void print_msg(char *msg, t_philo *philo);
+void	eat(t_philo *philo);
 
 
 #endif

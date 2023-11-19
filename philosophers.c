@@ -6,7 +6,7 @@
 /*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 10:34:53 by flafi             #+#    #+#             */
-/*   Updated: 2023/11/17 10:34:54 by flafi            ###   ########.fr       */
+/*   Updated: 2023/11/19 11:55:28 by flafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,17 +104,74 @@ void init_philos(t_program *progdata)
 		i++;
 	}
 }
-void* monitor(void* arg) {
-    // Dummy thread function
-	(void)arg;
-    return NULL;
-}
-void* routine(void* arg) {
+void	*monitor(void *philo_pointer)
+{
+	t_philo	*philo;
 
-	(void)arg;
-
-    return NULL;
+	philo = (t_philo *) philo_pointer;
+	pthread_mutex_lock(&philo->data->write);
+	// printf("data val: %d", philo->data->dead);
+	pthread_mutex_unlock(&philo->data->write);
+	while (philo->data->dead == 0)
+	{
+		pthread_mutex_lock(&philo->lock);
+		if (philo->data->finished >= philo->data->num_philos)
+			philo->data->dead = 1;
+		pthread_mutex_unlock(&philo->lock);
+	}
+	return ((void *)EXIT_SUCCESS);
 }
+//  testing stuff
+void	*supervisor(void *philo_pointer)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *) philo_pointer;
+	while (philo->data->dead == 0)
+	{
+		pthread_mutex_lock(&philo->lock);
+		if (get_current_time() >= philo->time_to_die && philo->eating == 0)
+			print_msg("died", philo);
+		if (philo->eat_count == philo->data->num_meals)
+		{
+			pthread_mutex_lock(&philo->data->lock);
+			philo->data->finished++;
+			philo->eat_count++;
+			pthread_mutex_unlock(&philo->data->lock);
+		}
+		pthread_mutex_unlock(&philo->lock);
+	}
+	return ((void *)0);
+}
+
+void	*routine(void *philo_pointer)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *) philo_pointer;
+	philo->time_to_die = philo->data->time_die + get_current_time();
+	if (pthread_create(&philo->t1, NULL, &supervisor, (void *)philo))
+		return ((void *)1);
+	while (philo->data->dead == 0)
+	{
+		eat(philo);
+		print_msg("is thinking", philo);
+	}
+	if (pthread_join(philo->t1, NULL))
+		return ((void *)1);
+	return ((void *)0);
+}
+// void* monitor(void* arg) {
+//     // Dummy thread function
+// 	(void)arg;
+//     return NULL;
+// }
+// void* routine(void* arg) {
+
+// 	(void)arg;
+
+//     return NULL;
+// }
 void	init_threads(t_program *progdata, t_mem_block **lst)
 {
 	int			i;
