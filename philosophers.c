@@ -6,7 +6,7 @@
 /*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 10:34:53 by flafi             #+#    #+#             */
-/*   Updated: 2023/11/19 11:55:28 by flafi            ###   ########.fr       */
+/*   Updated: 2023/11/20 13:25:45 by flafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ void init_philos(t_program *progdata)
 		progdata->philos[i].time_to_die = progdata->time_die;
 		progdata->philos[i].eat_count = 0;
 		progdata->philos[i].eating = 0;
-		// progdata->philos[i].status = 0; // verify the need of this
 		pthread_mutex_init(&progdata->philos[i].lock, NULL);
 		i++;
 	}
@@ -109,10 +108,7 @@ void	*monitor(void *philo_pointer)
 	t_philo	*philo;
 
 	philo = (t_philo *) philo_pointer;
-	pthread_mutex_lock(&philo->data->write);
-	// printf("data val: %d", philo->data->dead);
-	pthread_mutex_unlock(&philo->data->write);
-	while (philo->data->dead == 0)
+	while (!philo->data->dead)
 	{
 		pthread_mutex_lock(&philo->lock);
 		if (philo->data->finished >= philo->data->num_philos)
@@ -127,10 +123,10 @@ void	*supervisor(void *philo_pointer)
 	t_philo	*philo;
 
 	philo = (t_philo *) philo_pointer;
-	while (philo->data->dead == 0)
+	while (!philo->data->dead)
 	{
 		pthread_mutex_lock(&philo->lock);
-		if (get_current_time() >= philo->time_to_die && philo->eating == 0)
+		if (get_current_time() >= philo->time_to_die && !philo->eating)
 			print_msg("died", philo);
 		if (philo->eat_count == philo->data->num_meals)
 		{
@@ -152,7 +148,7 @@ void	*routine(void *philo_pointer)
 	philo->time_to_die = philo->data->time_die + get_current_time();
 	if (pthread_create(&philo->t1, NULL, &supervisor, (void *)philo))
 		return ((void *)1);
-	while (philo->data->dead == 0)
+	while (!philo->data->dead)
 	{
 		eat(philo);
 		print_msg("is thinking", philo);
@@ -217,6 +213,7 @@ int	main(int argc, char **argv)
 
 		// use ft_error_init from now on
 		init_threads(&progdata, &lst);
+		ft_exit(&progdata);
 		ft_free_all(&lst);
 	}
 	else
