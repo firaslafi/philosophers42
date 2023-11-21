@@ -6,7 +6,7 @@
 /*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 10:34:11 by flafi             #+#    #+#             */
-/*   Updated: 2023/11/19 11:58:46 by flafi            ###   ########.fr       */
+/*   Updated: 2023/11/21 14:59:59 by flafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	eat(t_philo *philo)
 	take_forks(philo);
 	pthread_mutex_lock(&philo->lock);
 	philo->eating = 1;
-	philo->time_to_die = get_current_time() + philo->data->time_die;
+	philo->time_to_kill = get_current_time() + philo->data->time_die;
 	print_msg("is eating", philo);
 	philo->eat_count++;
 	ft_usleep(philo->data->time_eat);

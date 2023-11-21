@@ -6,7 +6,7 @@
 /*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 10:34:53 by flafi             #+#    #+#             */
-/*   Updated: 2023/11/20 13:25:45 by flafi            ###   ########.fr       */
+/*   Updated: 2023/11/21 14:59:59 by flafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void init_philos(t_program *progdata)
 	{
 		progdata->philos[i].data = progdata;
 		progdata->philos[i].id = i + 1;
-		progdata->philos[i].time_to_die = progdata->time_die;
+		progdata->philos[i].time_to_kill = progdata->time_die;
 		progdata->philos[i].eat_count = 0;
 		progdata->philos[i].eating = 0;
 		pthread_mutex_init(&progdata->philos[i].lock, NULL);
@@ -126,7 +126,7 @@ void	*supervisor(void *philo_pointer)
 	while (!philo->data->dead)
 	{
 		pthread_mutex_lock(&philo->lock);
-		if (get_current_time() >= philo->time_to_die && !philo->eating)
+		if (get_current_time() >= philo->time_to_kill && !philo->eating)
 			print_msg("died", philo);
 		if (philo->eat_count == philo->data->num_meals)
 		{
@@ -145,7 +145,7 @@ void	*routine(void *philo_pointer)
 	t_philo	*philo;
 
 	philo = (t_philo *) philo_pointer;
-	philo->time_to_die = philo->data->time_die + get_current_time();
+	philo->time_to_kill = philo->data->time_die + get_current_time();
 	if (pthread_create(&philo->t1, NULL, &supervisor, (void *)philo))
 		return ((void *)1);
 	while (!philo->data->dead)

@@ -27,7 +27,7 @@ typedef struct s_philo
 	int				id;
 	int				eat_count;
 	int				eating;
-	uint64_t		time_to_die;
+	uint64_t		time_to_kill;
 	pthread_mutex_t	lock;
 	pthread_mutex_t	*r_fork;
 	pthread_mutex_t	*l_fork;
