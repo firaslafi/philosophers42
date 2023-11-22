@@ -30,11 +30,11 @@ void print_msg(char *msg, t_philo *philo)
     action_time = get_current_time() - philo->data->start_time;
 	if (ft_strcmp("died", msg) == 0 && philo->data->dead == 0)
 	{
-		printf("%llu %d %s\n", action_time, philo->id, msg);
+		printf("%lu %d %s\n", action_time, philo->id, msg);
 		philo->data->dead = 1;
 	}
 	if (!philo->data->dead)
-		printf("%llu %d %s\n", action_time, philo->id, msg);
+		printf("%lu %d %s\n", action_time, philo->id, msg);
     pthread_mutex_unlock(&philo->data->write);
 }
 void	take_forks(t_philo *philo)
