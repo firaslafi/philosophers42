@@ -10,17 +10,17 @@ void	ft_putstr_fd(char *s, int fd)
 		s++;
 	}
 }
-int	ft_usleep(size_t milliseconds)
+u_int64_t	ft_usleep(u_int64_t milliseconds)
 {
-	size_t	start;
+	u_int64_t	start;
 
 	start = get_current_time();
 	while ((get_current_time() - start) < milliseconds)
-		usleep(500);
+		usleep(50);
 	return (0);
 }
 
-size_t	get_current_time(void)
+u_int64_t	get_current_time(void)
 {
 	struct timeval	time;
 

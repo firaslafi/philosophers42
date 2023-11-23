@@ -6,7 +6,7 @@
 /*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 10:34:53 by flafi             #+#    #+#             */
-/*   Updated: 2023/11/21 14:59:59 by flafi            ###   ########.fr       */
+/*   Updated: 2023/11/23 20:19:28 by flafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ int	ft_checkallnumvals(char **str, int argc, t_mem_block **lst)
 	i = 1;
 	if (ft_atoi(str[1]) > 200 || ft_atoi(str[1]) <= 0)
 		ft_error("Input Error: Invalid number of philos", lst);
-	if (ft_atoi(str[2]) <= 0 || ft_atoi(str[3]) <= 0 || ft_atoi(str[3]) <= 0
-		|| ft_atoi(str[4]) <= 0)
+	if (ft_atoi(str[2]) <= 0 || ft_atoi(str[3]) <= 0 || ft_atoi(str[4]) <= 0)
 		ft_error("Input Error: negative or zero value", lst);
 	if (argc == 6)
 	{
@@ -82,7 +81,7 @@ void init_forks(t_program *progdata)
 	while (i < progdata->num_philos)
 	{
 		progdata->philos[i].l_fork = &progdata->forks[i];
-		progdata->philos[i].r_fork = &progdata->forks[i - 1];
+		progdata->philos[i].r_fork = &progdata->forks[(i + 1) % progdata->num_philos];
 		i++;
 	}
 
@@ -123,20 +122,21 @@ void	*supervisor(void *philo_pointer)
 	t_philo	*philo;
 
 	philo = (t_philo *) philo_pointer;
-	while (!philo->data->dead)
-	{
-		pthread_mutex_lock(&philo->lock);
-		if (get_current_time() >= philo->time_to_kill && !philo->eating)
-			print_msg("died", philo);
-		if (philo->eat_count == philo->data->num_meals)
-		{
-			pthread_mutex_lock(&philo->data->lock);
-			philo->data->finished++;
-			philo->eat_count++;
-			pthread_mutex_unlock(&philo->data->lock);
-		}
-		pthread_mutex_unlock(&philo->lock);
-	}
+	// while (!philo->data->dead)
+	// {
+	// 	pthread_mutex_lock(&philo->lock);
+	// 	if (get_current_time() >= philo->time_to_kill && !philo->eating)
+	// 		print_msg("died", philo);
+		
+	// 	if (philo->eat_count == philo->data->num_meals)
+	// 	{
+	// 		pthread_mutex_lock(&philo->data->lock);
+	// 		philo->data->finished++;
+	// 		// philo->eat_count++;
+	// 		pthread_mutex_unlock(&philo->data->lock);
+	// 	}
+	// 	pthread_mutex_unlock(&philo->lock);
+	// }
 	return ((void *)0);
 }
 
@@ -145,7 +145,6 @@ void	*routine(void *philo_pointer)
 	t_philo	*philo;
 
 	philo = (t_philo *) philo_pointer;
-	philo->time_to_kill = philo->data->time_die + get_current_time();
 	if (pthread_create(&philo->t1, NULL, &supervisor, (void *)philo))
 		return ((void *)1);
 	while (!philo->data->dead)
@@ -184,7 +183,6 @@ void	init_threads(t_program *progdata, t_mem_block **lst)
 	{
 		if (pthread_create(&progdata->th_id[i], NULL, &routine, &progdata->philos[i]) != 0)
 			ft_error_init("thread creating failled", lst, progdata);
-		ft_usleep(1);
 		i++;
 	}
 	i = 0;
@@ -195,12 +193,35 @@ void	init_threads(t_program *progdata, t_mem_block **lst)
 		i++;
 	}
 }
+void	*routine_one(void *philo_pointer)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *) philo_pointer;
+	return ((void *)0);
+}
+int	case_one(t_program *progdata, t_mem_block **lst)
+{
+	progdata->start_time = get_current_time();
+	if (pthread_create(&progdata->th_id[0], NULL, &routine_one, &progdata->philos[0]))
+		ft_error_init("thread joining failled", lst, progdata);
+	if (pthread_join(progdata->th_id[0], NULL) != 0)
+			ft_error_init("thread joining failled", lst, progdata);
+	print_msg("has taken fork", &progdata->philos[0]);
+	ft_usleep(progdata->time_sleep);
+	print_msg("died", &progdata->philos[0]);
+	progdata->philos[0].data->dead = 1;
+	ft_exit(progdata);
+	ft_free_all(lst);
+	return (0);
+}
 
 int	main(int argc, char **argv)
 {
 	t_program progdata;
-	t_mem_block *lst = NULL;
+	t_mem_block *lst;
 
+	lst = NULL;
 	if (argc == 5 || argc == 6)
 	{
 		ft_checkallnumvals(argv, argc, &lst);
@@ -210,8 +231,9 @@ int	main(int argc, char **argv)
 		alloc_prog(&progdata, &lst);
 		init_forks(&progdata);
 		init_philos(&progdata);
-
 		// use ft_error_init from now on
+		if (progdata.num_philos == 1)
+			case_one(&progdata, &lst);
 		init_threads(&progdata, &lst);
 		ft_exit(&progdata);
 		ft_free_all(&lst);
@@ -220,6 +242,5 @@ int	main(int argc, char **argv)
 	{
 		ft_error("Input Error: args number", &lst);
 	}
-	// two paths design for 5 and 4 args
 	return (EXIT_SUCCESS);
 }

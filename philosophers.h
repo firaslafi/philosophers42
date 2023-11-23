@@ -51,16 +51,16 @@ typedef struct s_program
 }					t_program;
 
 
-
+// philo->time_to_kill = philo->data->time_die + get_current_time();
 int	ft_isdigit(int c);
 int ft_isalldigit(char *str);
-int	ft_atoi(char *str);
+u_int64_t	ft_atoi(char *str);
 void	ft_error(char *msg, t_mem_block **lst);
 void *ft_malloc(t_mem_block **lst, int size);
 void ft_free_all(t_mem_block **lst);
 void	ft_error_init(char *msg, t_mem_block **lst, t_program *progdata);
-size_t	get_current_time(void);
-int	ft_usleep(size_t milliseconds);
+u_int64_t	get_current_time(void);
+u_int64_t	ft_usleep(u_int64_t milliseconds);
 void	ft_exit(t_program *progdata);
 void print_msg(char *msg, t_philo *philo);
 void	eat(t_philo *philo);
