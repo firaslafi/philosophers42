@@ -64,6 +64,6 @@ u_int64_t	ft_usleep(u_int64_t milliseconds);
 void	ft_exit(t_program *progdata);
 void print_msg(char *msg, t_philo *philo);
 void	eat(t_philo *philo);
-
+int check_dead(t_philo *philo);
 
 #endif
