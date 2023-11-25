@@ -27,7 +27,7 @@ typedef struct s_philo
 	int				id;
 	int				eat_count;
 	int				eating;
-	uint64_t		time_to_kill;
+	long		time_to_kill;
 	pthread_mutex_t	lock;
 	pthread_mutex_t	*r_fork;
 	pthread_mutex_t	*l_fork;
@@ -36,6 +36,7 @@ typedef struct s_philo
 typedef struct s_program
 {
 	pthread_t		*th_id;
+	pthread_t		th_sup;
 	int				num_philos;
 	int				num_meals;
 	int				dead;
@@ -54,16 +55,18 @@ typedef struct s_program
 // philo->time_to_kill = philo->data->time_die + get_current_time();
 int	ft_isdigit(int c);
 int ft_isalldigit(char *str);
-u_int64_t	ft_atoi(char *str);
+long	ft_atoi(char *str);
 void	ft_error(char *msg, t_mem_block **lst);
 void *ft_malloc(t_mem_block **lst, int size);
 void ft_free_all(t_mem_block **lst);
 void	ft_error_init(char *msg, t_mem_block **lst, t_program *progdata);
-u_int64_t	get_current_time(void);
-u_int64_t	ft_usleep(u_int64_t milliseconds);
+long	get_current_time(void);
+long	ft_usleep(long milliseconds);
 void	ft_exit(t_program *progdata);
 void print_msg(char *msg, t_philo *philo);
 void	eat(t_philo *philo);
 int check_dead(t_philo *philo);
+void kill_program(t_program *data);
+void update_kill_time(t_philo *philo);
 
 #endif

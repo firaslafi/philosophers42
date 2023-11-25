@@ -16,9 +16,9 @@ static int	ft_issign(const char *str)
 	return (0);
 }
 
-u_int64_t	ft_atoi(char *str)
+long	ft_atoi(char *str)
 {
-	u_int64_t	result;
+	long	result;
 	int	sign;
 
 	result = 0;

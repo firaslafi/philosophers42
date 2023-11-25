@@ -10,9 +10,9 @@ void	ft_putstr_fd(char *s, int fd)
 		s++;
 	}
 }
-u_int64_t	ft_usleep(u_int64_t milliseconds)
+long	ft_usleep(long milliseconds)
 {
-	u_int64_t	start;
+	long	start;
 
 	start = get_current_time();
 	while ((get_current_time() - start) < milliseconds)
@@ -20,7 +20,7 @@ u_int64_t	ft_usleep(u_int64_t milliseconds)
 	return (0);
 }
 
-u_int64_t	get_current_time(void)
+long	get_current_time(void)
 {
 	struct timeval	time;
 
