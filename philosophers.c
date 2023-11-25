@@ -6,7 +6,7 @@
 /*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 10:34:53 by flafi             #+#    #+#             */
-/*   Updated: 2023/11/25 18:42:59 by flafi            ###   ########.fr       */
+/*   Updated: 2023/11/25 18:54:41 by flafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,9 +116,8 @@ void	*monitor(void *philo_pointer)
 		{
 			pthread_mutex_lock(&philo->lock);
 			kill_program(philo->data);
-			// philo->data->dead = 1;
-			// break;
-			// printf("hxxxxxxxxxxx\n");
+			philo->data->dead = 1;
+			printf("hxxxxxxxxxxx\n");
 			pthread_mutex_unlock(&philo->lock);
 		}
 	}
@@ -131,7 +130,8 @@ void *supervisor(void *philo_pointer)
 	
 	long current_time;
 
-		// ft_usleep(800);
+	if(philo->data->num_philos % 2 == 0)
+		ft_usleep(philo->data->time_die / 2);
     while (1)
 	{
 		current_time = get_current_time() - (long)philo->data->start_time;
