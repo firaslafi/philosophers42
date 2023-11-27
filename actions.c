@@ -6,7 +6,7 @@
 /*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 10:34:11 by flafi             #+#    #+#             */
-/*   Updated: 2023/11/25 18:02:12 by flafi            ###   ########.fr       */
+/*   Updated: 2023/11/27 20:45:00 by flafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,15 +100,29 @@ void update_kill_time(t_philo *philo)
 	philo->time_to_kill = get_current_time() + (2 * philo->data->time_die) - philo->data->start_time ;
 	pthread_mutex_unlock(&philo->lock);
 }
+int ate_all_meals(t_philo *philo)
+{
+	if (philo->eat_count < philo->data->num_meals) 
+		{
+			pthread_mutex_lock(&philo->lock);
+            philo->data->finished++;
+			pthread_mutex_unlock(&philo->lock);
+			return (0);
+        }
+	return (1);
+}
 void	eat(t_philo *philo)
 {
 	take_forks(philo);
-
 	print_msg("is eating", philo);
 	philo->eating = 1;
 	update_kill_time(philo);
 	ft_usleep(philo->data->time_eat);
 	philo->eating = 0;
+	pthread_mutex_lock(&philo->lock);
 	philo->eat_count++;
+	if (philo->eat_count == philo->data->num_meals)
+		philo->data->finished += 1;
+	pthread_mutex_unlock(&philo->lock);
 	drop_forks(philo);
 }

@@ -11,6 +11,8 @@
 # include <pthread.h>
 # include <inttypes.h>
 # include <sys/time.h>
+// remove
+#include <stdbool.h>
 
 struct s_program;
 
@@ -68,5 +70,6 @@ void	eat(t_philo *philo);
 int check_dead(t_philo *philo);
 void kill_program(t_program *data);
 void update_kill_time(t_philo *philo);
+int ate_all_meals(t_philo *philo);
 
 #endif
