@@ -6,100 +6,11 @@
 /*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/17 10:34:53 by flafi             #+#    #+#             */
-/*   Updated: 2023/11/28 16:52:37 by flafi            ###   ########.fr       */
+/*   Updated: 2023/11/28 17:45:23 by flafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./philosophers.h"
-
-// check args all num and verify input values
-int	ft_checkallnumvals(char **str, int argc, t_mem_block **lst)
-{
-	int	i;
-
-	i = 1;
-	if (ft_atoi(str[1]) > 200 || ft_atoi(str[1]) <= 0)
-		ft_error("Input Error: Invalid number of philos", lst);
-	if (ft_atoi(str[2]) <= 0 || ft_atoi(str[3]) <= 0 || ft_atoi(str[4]) <= 0)
-		ft_error("Input Error: negative or zero value", lst);
-	if (argc == 6)
-	{
-		if (ft_atoi(str[5]) <= 0)
-			ft_error("Input Error: negative or zero num meals value", lst);
-	}
-	while (str[i])
-	{
-		if (!ft_isalldigit(str[i]))
-			ft_error("Input Error: not numeric", lst);
-		i++;
-	}
-	return (0);
-}
-// fill the program related data
-void	fill_progdata(t_program *progdata, char **argv, int argc)
-{
-	progdata->num_philos = ft_atoi(argv[1]);
-	progdata->time_die = ft_atoi(argv[2]);
-	progdata->time_eat = ft_atoi(argv[3]);
-	progdata->time_sleep = ft_atoi(argv[4]);
-	if (argc == 6)
-		progdata->num_meals = ft_atoi(argv[5]);
-	else
-		progdata->num_meals = -1;
-	progdata->dead = 0;
-	progdata->finished = 0;
-}
-void	alloc_prog(t_program *progdata, t_mem_block **lst)
-{
-	progdata->th_id = ft_malloc(lst, (progdata->num_philos
-			* sizeof(pthread_t)));
-	if (!progdata->th_id)
-		ft_error("threads allocation failed", lst);
-	progdata->forks = ft_malloc(lst, progdata->num_philos
-		* sizeof(pthread_mutex_t));
-	if (!progdata->forks)
-		ft_error("forks allocation failed", lst);
-	progdata->philos = ft_malloc(lst, progdata->num_philos * sizeof(t_philo));
-	if (!progdata->philos)
-		ft_error("philos allocation failed", lst);
-	pthread_mutex_init(&progdata->write, NULL);
-	pthread_mutex_init(&progdata->lock, NULL);
-}
-void	init_forks(t_program *progdata)
-{
-	int	i;
-
-	i = 0;
-	while (i < progdata->num_philos)
-	{
-		pthread_mutex_init(&progdata->forks[i], NULL);
-		i++;
-	}
-	i = 0;
-	while (i < progdata->num_philos)
-	{
-		progdata->philos[i].l_fork = &progdata->forks[i];
-		progdata->philos[i].r_fork = &progdata->forks[(i + 1)
-			% progdata->num_philos];
-		i++;
-	}
-}
-void	init_philos(t_program *progdata)
-{
-	int	i;
-
-	i = 0;
-	while (i < progdata->num_philos)
-	{
-		progdata->philos[i].data = progdata;
-		progdata->philos[i].id = i + 1;
-		progdata->philos[i].time_to_kill = progdata->time_die;
-		progdata->philos[i].eat_count = 0;
-		progdata->philos[i].eating = 0;
-		pthread_mutex_init(&progdata->philos[i].lock, NULL);
-		i++;
-	}
-}
 
 void	*monitor(void *philo_pointer)
 {
@@ -113,10 +24,7 @@ void	*monitor(void *philo_pointer)
 		if (check_dead(philos))
 		{
 			ft_usleep(500);
-			pthread_mutex_lock(&philos->data->write);
-			printf("%ld %d %s\n", get_current_time()
-				- (long)philos->data->start_time - 500, philos->id, "has died");
-			pthread_mutex_unlock(&philos->data->write);
+			print_msg_adj(philos);
 			all_finished = true;
 		}
 		pthread_mutex_lock(&philos->data->write);
@@ -161,25 +69,11 @@ void	*supervisor(void *philo_pointer)
 	return (NULL);
 }
 
-void	kill_program(t_program *data)
-{
-	int	i;
-
-	i = -1;
-	while (++i < data->num_philos)
-	{
-		pthread_mutex_lock(&data->philos[i].lock);
-		data->philos[i].data->dead = 1;
-		pthread_mutex_unlock(&data->philos[i].lock);
-	}
-}
-
 void	*routine(void *philo_pointer)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_pointer;
-	// update_kill_time(philo);
 	if (philo->id % 2 != 0)
 	{
 		print_msg("is thinking", philo);
@@ -191,8 +85,6 @@ void	*routine(void *philo_pointer)
 		print_msg("is sleeping", philo);
 		ft_usleep(philo->data->time_sleep);
 		print_msg("is thinking", philo);
-		// printf("time to kill is = %d %ld\n", philo->id, philo->time_to_kill);
-		// update_kill_time(philo);
 	}
 	return ((void *)0);
 }
@@ -211,46 +103,19 @@ void	init_threads(t_program *progdata, t_mem_block **lst)
 	if (pthread_create(&progdata->philos[0].t1, NULL, &supervisor,
 			&progdata->philos[0]))
 		ft_error_init("supervisor thread creating failled", lst, progdata);
-	i = 0;
-	while (i < progdata->num_philos)
+	i = -1;
+	while (++i < progdata->num_philos)
 	{
 		if (pthread_create(&progdata->th_id[i], NULL, &routine,
 				&progdata->philos[i]) != 0)
 			ft_error_init("thread creating failled", lst, progdata);
-		i++;
 	}
-	i = 0;
-	while (i < progdata->num_philos)
-	{
+	i = -1;
+	while (++i < progdata->num_philos)
 		if (pthread_join(progdata->th_id[i], NULL) != 0)
 			ft_error_init("thread joining failled", lst, progdata);
-		i++;
-	}
 	pthread_join((progdata->philos[0].t1), NULL);
 	pthread_join(m_tid, NULL);
-}
-void	*routine_one(void *philo_pointer)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)philo_pointer;
-	return ((void *)0);
-}
-int	case_one(t_program *progdata, t_mem_block **lst)
-{
-	progdata->start_time = get_current_time();
-	if (pthread_create(&progdata->th_id[0], NULL, &routine_one,
-			&progdata->philos[0]))
-		ft_error_init("thread joining failled", lst, progdata);
-	if (pthread_join(progdata->th_id[0], NULL) != 0)
-		ft_error_init("thread joining failled", lst, progdata);
-	print_msg("has taken fork", &progdata->philos[0]);
-	ft_usleep(progdata->time_sleep);
-	print_msg("died", &progdata->philos[0]);
-	progdata->philos[0].data->dead = 1;
-	ft_exit(progdata);
-	ft_free_all(lst);
-	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -262,13 +127,10 @@ int	main(int argc, char **argv)
 	if (argc == 5 || argc == 6)
 	{
 		ft_checkallnumvals(argv, argc, &lst);
-		// =start
-		// on exit destroy mutexs crucial shit ***********
 		fill_progdata(&progdata, argv, argc);
 		alloc_prog(&progdata, &lst);
 		init_forks(&progdata);
 		init_philos(&progdata);
-		// use ft_error_init from now on
 		if (progdata.num_philos == 1)
 			case_one(&progdata, &lst);
 		init_threads(&progdata, &lst);

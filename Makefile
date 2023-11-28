@@ -14,7 +14,7 @@ CC = cc
 # -g -fsanitize=thread 
 # -pthread
 SRCS = philosophers.c ./utils/ft_isdigit.c ./utils/ft_atoi.c ./utils/ft_error.c garbage_collector.c \
-		./utils/time.c actions.c
+		./utils/time.c actions.c actions_utils.c checks_and_inits.c caseone_killprog.c
 OBJS = $(SRCS:.c=.o)
 
 
