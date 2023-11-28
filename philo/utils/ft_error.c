@@ -6,7 +6,7 @@
 /*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 16:50:29 by flafi             #+#    #+#             */
-/*   Updated: 2023/11/28 17:25:12 by flafi            ###   ########.fr       */
+/*   Updated: 2023/11/28 17:56:59 by flafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ void	ft_error(char *msg, t_mem_block **lst)
 
 void	ft_error_init(char *msg, t_mem_block **lst, t_program *progdata)
 {
-	printf("%s\n", msg);
+	if (msg)
+		printf("%s\n", msg);
 	if (progdata)
 		ft_exit(progdata);
 	ft_free_all(lst);

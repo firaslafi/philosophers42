@@ -6,7 +6,7 @@
 /*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:23:02 by flafi             #+#    #+#             */
-/*   Updated: 2023/11/28 17:41:17 by flafi            ###   ########.fr       */
+/*   Updated: 2023/11/28 17:56:35 by flafi            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	case_one(t_program *progdata, t_mem_block **lst)
 	ft_usleep(progdata->time_sleep);
 	print_msg("died", &progdata->philos[0]);
 	progdata->philos[0].data->dead = 1;
-	ft_exit(progdata);
+	ft_error_init(NULL, lst, progdata);
 	ft_free_all(lst);
 	return (0);
 }
