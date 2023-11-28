@@ -1,4 +1,14 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_error.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/28 16:50:29 by flafi             #+#    #+#             */
+/*   Updated: 2023/11/28 16:50:45 by flafi            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../philosophers.h"
 
@@ -23,6 +33,7 @@ void	ft_error(char *msg, t_mem_block **lst)
 	ft_free_all(lst);
 	exit(EXIT_FAILURE);
 }
+
 void	ft_error_init(char *msg, t_mem_block **lst, t_program *progdata)
 {
 	printf("%s\n", msg);

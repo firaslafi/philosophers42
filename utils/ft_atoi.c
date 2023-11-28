@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: flafi <flafi@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/28 16:50:16 by flafi             #+#    #+#             */
+/*   Updated: 2023/11/28 16:50:21 by flafi            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../philosophers.h"
 
@@ -19,7 +30,7 @@ static int	ft_issign(const char *str)
 long	ft_atoi(char *str)
 {
 	long	result;
-	int	sign;
+	int		sign;
 
 	result = 0;
 	sign = 1;
@@ -31,16 +42,16 @@ long	ft_atoi(char *str)
 	{
 		if (*str == '-')
 		{
-		sign *= -1;
-		str++;
+			sign *= -1;
+			str++;
 		}
 		else
 			str++;
 	}
 	while (ft_isdigit(*str))
 	{
-	result = result * 10 + *str - '0';
-	str++;
+		result = result * 10 + *str - '0';
+		str++;
 	}
 	return (result * sign);
 }
